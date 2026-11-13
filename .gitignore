@@ -1,0 +1,12 @@
+# Python / IDE
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.idea/
+
+# ML Artifacts & Weights
+*.pth
+
+# Dataset & Data
+data/
