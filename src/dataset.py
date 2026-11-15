@@ -10,7 +10,10 @@ class CarDataset(Dataset):
         self.data_dir = data_dir
         self.transform = transform
 
-        self.classes = sorted(os.listdir(data_dir))
+        self.classes = sorted(
+            d for d in os.listdir(data_dir)
+            if os.path.isdir(os.path.join(data_dir, d))
+        )
         self.class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
 
         self.samples = []
