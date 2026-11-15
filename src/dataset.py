@@ -2,6 +2,7 @@ import os
 import configs
 from PIL import Image
 from torch.utils.data import Dataset
+from torch.utils.data import DataLoader, random_split
 
 
 class CarDataset(Dataset):
@@ -32,9 +33,20 @@ class CarDataset(Dataset):
 
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]
-        image = Image.open(img_path)
+        image = Image.open(img_path).convert("RGB")
 
         if self.transform:
             image = self.transform(image)
 
         return image, label
+
+    def split(self):
+        train_size = int(len(self.samples) * configs.TRAIN_SIZE)
+        val_size = len(self.samples) - train_size
+
+        train_dataset, val_dataset = random_split(self, [train_size, val_size])
+
+        train = DataLoader(train_dataset, batch_size=configs.BATCH_SIZE, shuffle=True)
+        val = DataLoader(val_dataset, batch_size=configs.BATCH_SIZE, shuffle=False)
+
+        return train, val

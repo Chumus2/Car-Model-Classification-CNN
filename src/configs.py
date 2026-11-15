@@ -17,3 +17,7 @@ TRANSFORMS = transforms.Compose([
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SRC_DIR)
 DATA_DIR = os.path.join(ROOT_DIR, "data")
+
+# Data
+TRAIN_SIZE = 0.8
+BATCH_SIZE = 32
