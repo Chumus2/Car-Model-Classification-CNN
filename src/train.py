@@ -12,5 +12,7 @@ def train_model():
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Dataset size: {len(dataset)}")
 
 
+
+
 if __name__ == "__main__":
     train_model()
