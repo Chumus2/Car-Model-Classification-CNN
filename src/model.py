@@ -2,7 +2,7 @@ import torch.nn as nn
 
 
 class CarModelClassifier(nn.Module):
-    def __init__(self, output_size, img_size=(224, 224), hidden_size=128):
+    def __init__(self, output_size, img_size=(256, 256), hidden_size=128):
         super().__init__()
 
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)

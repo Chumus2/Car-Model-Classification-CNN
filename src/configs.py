@@ -22,3 +22,6 @@ DATA_DIR = os.path.join(ROOT_DIR, "data")
 TRAIN_SIZE = 0.8
 BATCH_SIZE = 32
 LEARNING_RATE = 0.001
+
+# Training
+EPOCHS = 1
