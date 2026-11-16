@@ -48,8 +48,35 @@ def train_model():
             train_loss += loss.item()
 
         train_avg_loss = train_loss / len(train)
-        print(f"Train_avg_loss: {train_avg_loss}")
 
+
+        model.eval()
+        val_loss = 0.0
+        total = 0
+        correct = 0
+
+        with torch.no_grad():
+
+            for images, labels in val:
+                images = images.to(configs.DEVICE)
+                labels = labels.to(configs.DEVICE)
+
+                outputs = model(images)
+                loss = crit(outputs, labels)
+                val_loss += loss.item()
+
+                _, predicted = torch.max(outputs.data, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
+
+        val_avg_loss = val_loss / len(val)
+        val_acc = correct / total * 100
+
+        print(f"Epoch [{epoch + 1}/{configs.EPOCHS}] "
+              f"| Train Loss: {train_avg_loss:.4f} "
+              f"| {Fore.GREEN}Val Loss: {val_avg_loss:.4f} {Style.RESET_ALL} "
+              f"| {Fore.GREEN}Val Accuracy: {val_acc:.2f}% {Style.RESET_ALL}")
+        
 
 if __name__ == "__main__":
     train_model()
