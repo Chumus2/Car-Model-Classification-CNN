@@ -9,7 +9,7 @@ from colorama import Fore, Style, init
 init(autoreset=True)
 
 def train_model():
-    dataset = CarDataset(data_dir=configs.DATA_DIR, transform=configs.TRANSFORMS)
+    dataset = CarDataset(data_dir=configs.DATA_DIR)
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Dataset classes: {dataset.classes}")
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Dataset size: {len(dataset)}")
 

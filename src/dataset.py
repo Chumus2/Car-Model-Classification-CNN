@@ -1,3 +1,4 @@
+import copy
 import os
 import configs
 from PIL import Image
@@ -45,6 +46,11 @@ class CarDataset(Dataset):
         val_size = len(self.samples) - train_size
 
         train_dataset, val_dataset = random_split(self, [train_size, val_size])
+
+        self.transform = configs.TRAIN_TRANSFORMS
+
+        val_dataset.dataset = copy.deepcopy(self)
+        val_dataset.dataset.transform = configs.VAL_TRANSFORMS
 
         train = DataLoader(train_dataset, batch_size=configs.BATCH_SIZE, shuffle=True)
         val = DataLoader(val_dataset, batch_size=configs.BATCH_SIZE, shuffle=False)
