@@ -30,6 +30,7 @@ transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SRC_DIR)
 DATA_DIR = os.path.join(ROOT_DIR, "data")
+MODEL_DIR = os.path.join(ROOT_DIR, "model")
 
 # Data
 TRAIN_SIZE = 0.8
@@ -37,4 +38,4 @@ BATCH_SIZE = 32
 LEARNING_RATE = 0.001
 
 # Training
-EPOCHS = 1
+EPOCHS = 10

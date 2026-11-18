@@ -1,3 +1,5 @@
+import os.path
+
 import torch
 import configs
 import torch.nn as nn
@@ -26,6 +28,8 @@ def train_model():
     optim = torch.optim.Adam(model.parameters(), lr=configs.LEARNING_RATE)
     print(f"\n{Fore.YELLOW}[INFO]{Style.RESET_ALL} Loss: Cross Entropy Loss")
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Optimizer: Adam (lr={configs.LEARNING_RATE})")
+
+    best_val_loss = float("inf")
 
     print("\n" + "=" * 50)
     print("STARTING TRAINING PROCESS")
@@ -76,6 +80,25 @@ def train_model():
               f"| Train Loss: {train_avg_loss:.4f} "
               f"| {Fore.GREEN}Val Loss: {val_avg_loss:.4f} {Style.RESET_ALL} "
               f"| {Fore.GREEN}Val Accuracy: {val_acc:.2f}% {Style.RESET_ALL}")
+
+        if val_avg_loss < best_val_loss:
+            best_val_loss = val_avg_loss
+
+            checkpoint = {
+                "epoch": epoch + 1,
+                "model_state_dict": model.state_dict(),
+                "train_loss": train_avg_loss,
+                "val_loss": val_avg_loss,
+                "val_acc": val_acc,
+            }
+
+            if not os.path.exists(configs.MODEL_DIR):
+                os.makedirs(configs.MODEL_DIR)
+
+            checkpoint_path = os.path.join(configs.MODEL_DIR, "best_model.pth")
+            torch.save(checkpoint, checkpoint_path)
+            print(f"{Fore.GREEN}[CHECKPOINT]{Style.RESET_ALL} Improvement found! "
+                  f"Saved new best_model.pth (Val Loss: {best_val_loss:.4f})\n")
         
 
 if __name__ == "__main__":
