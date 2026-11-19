@@ -18,8 +18,8 @@ def train_model():
 
     train, val = dataset.split()
     print(f"\n{Fore.GREEN}[SUCCESS]{Style.RESET_ALL} Dataset splitted!")
-    print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Train size: {len(train)}")
-    print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Val size: {len(val)}")
+    print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Train size: {len(train.dataset)}")
+    print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Val size: {len(val.dataset)}")
 
     model = CarModelClassifier(output_size=len(dataset.classes))
     model = model.to(configs.DEVICE)
@@ -96,6 +96,7 @@ def train_model():
             checkpoint = {
                 "epoch": epoch + 1,
                 "model_state_dict": model.state_dict(),
+                "classes": dataset.classes,
                 "train_loss": train_avg_loss,
                 "val_loss": val_avg_loss,
                 "val_acc": val_acc,

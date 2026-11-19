@@ -33,6 +33,7 @@ DATA_DIR = os.path.join(ROOT_DIR, "data")
 MODEL_DIR = os.path.join(ROOT_DIR, "model")
 
 # Data
+SEED = 42
 TRAIN_SIZE = 0.8
 BATCH_SIZE = 32
 

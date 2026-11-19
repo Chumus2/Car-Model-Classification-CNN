@@ -1,9 +1,10 @@
 import copy
 import os
+import torch
 import configs
 from PIL import Image
 from torch.utils.data import Dataset
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, Subset
 
 
 class CarDataset(Dataset):
@@ -43,14 +44,21 @@ class CarDataset(Dataset):
 
     def split(self):
         train_size = int(len(self.samples) * configs.TRAIN_SIZE)
-        val_size = len(self.samples) - train_size
 
-        train_dataset, val_dataset = random_split(self, [train_size, val_size])
+        generator = torch.Generator().manual_seed(configs.SEED)
+        indices = torch.randperm(len(self.samples), generator=generator).tolist()
 
-        self.transform = configs.TRAIN_TRANSFORMS
+        train_indices = indices[:train_size]
+        val_indices = indices[train_size:]
 
-        val_dataset.dataset = copy.deepcopy(self)
-        val_dataset.dataset.transform = configs.VAL_TRANSFORMS
+        train_base = CarDataset(self.data_dir, transform=configs.TRAIN_TRANSFORMS)
+        val_base = CarDataset(self.data_dir, transform=configs.VAL_TRANSFORMS)
+
+        train_base.classes, train_base.class_to_idx, train_base.samples = self.classes, self.class_to_idx, self.samples
+        val_base.classes, val_base.class_to_idx, val_base.samples = self.classes, self.class_to_idx, self.samples
+
+        train_dataset = Subset(train_base, train_indices)
+        val_dataset = Subset(val_base, val_indices)
 
         train = DataLoader(train_dataset, batch_size=configs.BATCH_SIZE, shuffle=True)
         val = DataLoader(val_dataset, batch_size=configs.BATCH_SIZE, shuffle=False)
