@@ -1,5 +1,4 @@
-import os.path
-
+import os
 import torch
 import configs
 import torch.nn as nn
@@ -26,8 +25,8 @@ def train_model():
     print(f"\n{Fore.YELLOW}[INFO]{Style.RESET_ALL} Working device: {configs.DEVICE}")
 
     crit = nn.CrossEntropyLoss()
-    optim = torch.optim.Adam(model.parameters(), lr=configs.LEARNING_RATE)
-    scheduler = ReduceLROnPlateau(optim, mode="min", factor=configs.FACTOR, patience=configs.PATIENCE)
+    optim = torch.optim.Adam(model.parameters(), lr=configs.LEARNING_RATE, weight_decay=1e-4)
+    scheduler = ReduceLROnPlateau(optim, mode="min", factor=configs.FACTOR, patience=configs.SCHEDULER_PATIENCE)
     print(f"\n{Fore.YELLOW}[INFO]{Style.RESET_ALL} Loss: Cross Entropy Loss")
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Optimizer: Adam (lr={configs.LEARNING_RATE})")
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Scheduler: ReduceLROnPlateau")
