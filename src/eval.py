@@ -3,7 +3,7 @@ import torch
 import configs
 import numpy as np
 from dataset import CarDataset
-from model import CarModelClassifier
+from model import CarModelClassifier, CarModelClassifierTL
 from sklearn.metrics import confusion_matrix, classification_report
 
 
@@ -11,7 +11,7 @@ def eval_model():
     dataset = CarDataset(data_dir=configs.DATA_DIR)
     _, val = dataset.split()
 
-    model = CarModelClassifier(output_size=len(dataset.classes))
+    model = CarModelClassifierTL(output_size=len(dataset.classes))
     model = model.to(configs.DEVICE)
 
     checkpoint_path = os.path.join(configs.MODEL_DIR, "best_model.pth")

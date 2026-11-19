@@ -1,4 +1,5 @@
 import torch.nn as nn
+from torchvision.models import resnet18, ResNet18_Weights
 
 
 class CarModelClassifier(nn.Module):
@@ -38,3 +39,24 @@ class CarModelClassifier(nn.Module):
         x = self.features(x)
         x = self.classifier(x)
         return x
+
+
+class CarModelClassifierTL(nn.Module):
+    def __init__(self, output_size, pretrained=True, freeze_backbone=False):
+        super().__init__()
+
+        weights = ResNet18_Weights.DEFAULT if pretrained else None
+        self.backbone = resnet18(weights=weights)
+
+        if freeze_backbone:
+            for param in self.backbone.parameters():
+                param.requires_grad = False
+
+        in_features = self.backbone.fc.in_features
+        self.backbone.fc = nn.Sequential(
+            nn.Dropout(0.3),
+            nn.Linear(in_features=in_features, out_features=output_size),
+        )
+
+    def forward(self, x):
+        return self.backbone(x)

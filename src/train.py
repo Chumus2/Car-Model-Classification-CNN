@@ -3,7 +3,7 @@ import torch
 import configs
 import torch.nn as nn
 from dataset import CarDataset
-from model import CarModelClassifier
+from model import CarModelClassifier, CarModelClassifierTL
 from colorama import Fore, Style, init
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
@@ -20,7 +20,7 @@ def train_model():
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Train size: {len(train.dataset)}")
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Val size: {len(val.dataset)}")
 
-    model = CarModelClassifier(output_size=len(dataset.classes))
+    model = CarModelClassifierTL(output_size=len(dataset.classes))
     model = model.to(configs.DEVICE)
     print(f"\n{Fore.YELLOW}[INFO]{Style.RESET_ALL} Working device: {configs.DEVICE}")
 
