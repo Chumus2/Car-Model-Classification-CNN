@@ -5,33 +5,36 @@ class CarModelClassifier(nn.Module):
     def __init__(self, output_size, img_size=(256, 256), hidden_size=128):
         super().__init__()
 
-        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)
-        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.relu = nn.ReLU()
+        self.features = nn.Sequential(
+            # 3 > 32
+            nn.Conv2d(3, 32, kernel_size=3, stride=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
 
-        self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
+            # 32 > 64
+            nn.Conv2d(32, 64, kernel_size=3, stride=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
 
-        self.flatten = nn.Flatten()
+            # 64 > 128
+            nn.Conv2d(64, 128, kernel_size=3, stride=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            nn.AdaptiveAvgPool2d((4, 4)),
+        )
 
-        h, w = img_size
-        linear_input_size = 64 * (h // 4) * (w // 4)
-
-        self.fc1 = nn.Linear(in_features=linear_input_size,out_features=hidden_size)
-        self.fc2 = nn.Linear(in_features=hidden_size, out_features=output_size)
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Dropout(0.3),
+            nn.Linear(in_features=128 * 4 * 4, out_features=hidden_size),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.3),
+            nn.Linear(in_features=hidden_size, out_features=output_size),
+        )
 
     def forward(self, x):
-        x = self.conv1(x)
-        x = self.pool(x)
-        x = self.relu(x)
-
-        x = self.conv2(x)
-        x = self.pool(x)
-        x = self.relu(x)
-
-        x = self.flatten(x)
-
-        x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
-
+        x = self.features(x)
+        x = self.classifier(x)
         return x
