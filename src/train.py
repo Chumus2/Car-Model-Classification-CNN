@@ -6,6 +6,7 @@ import torch.nn as nn
 from dataset import CarDataset
 from model import CarModelClassifier
 from colorama import Fore, Style, init
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 init(autoreset=True)
@@ -26,10 +27,13 @@ def train_model():
 
     crit = nn.CrossEntropyLoss()
     optim = torch.optim.Adam(model.parameters(), lr=configs.LEARNING_RATE)
+    scheduler = ReduceLROnPlateau(optim, mode="min", factor=configs.FACTOR, patience=configs.PATIENCE)
     print(f"\n{Fore.YELLOW}[INFO]{Style.RESET_ALL} Loss: Cross Entropy Loss")
     print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Optimizer: Adam (lr={configs.LEARNING_RATE})")
+    print(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Scheduler: ReduceLROnPlateau")
 
     best_val_loss = float("inf")
+    patience_count = 0
 
     print("\n" + "=" * 50)
     print("STARTING TRAINING PROCESS")
@@ -76,13 +80,18 @@ def train_model():
         val_avg_loss = val_loss / len(val)
         val_acc = correct / total * 100
 
+        scheduler.step(val_avg_loss)
+        current_lr = optim.param_groups[0]["lr"]
+
         print(f"Epoch [{epoch + 1}/{configs.EPOCHS}] "
               f"| Train Loss: {train_avg_loss:.4f} "
               f"| {Fore.GREEN}Val Loss: {val_avg_loss:.4f} {Style.RESET_ALL} "
-              f"| {Fore.GREEN}Val Accuracy: {val_acc:.2f}% {Style.RESET_ALL}")
+              f"| {Fore.GREEN}Val Accuracy: {val_acc:.2f}% {Style.RESET_ALL} "
+              f"| LR: {current_lr}")
 
         if val_avg_loss < best_val_loss:
             best_val_loss = val_avg_loss
+            patience_count = 0
 
             checkpoint = {
                 "epoch": epoch + 1,
@@ -99,6 +108,12 @@ def train_model():
             torch.save(checkpoint, checkpoint_path)
             print(f"{Fore.GREEN}[CHECKPOINT]{Style.RESET_ALL} Improvement found! "
                   f"Saved new best_model.pth (Val Loss: {best_val_loss:.4f})\n")
+
+        else:
+            patience_count += 1
+            if patience_count >= configs.PATIENCE:
+                print(f"{Fore.RED}[STOP]{Style.RESET_ALL} Validation loss did not improve for {configs.PATIENCE} consecutive epochs.")
+                break
         
 
 if __name__ == "__main__":
