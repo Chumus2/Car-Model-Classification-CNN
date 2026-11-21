@@ -31,11 +31,16 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SRC_DIR)
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 MODEL_DIR = os.path.join(ROOT_DIR, "model")
+TEST_DIR = os.path.join(ROOT_DIR, "test")
 
 # Data
 SEED = 42
 TRAIN_SIZE = 0.8
 BATCH_SIZE = 32
+CLASSES = [
+    "Audi R8", "Audi RS5", "BMW M3", "BMW M5", "Chevrolet Camaro", "Ford Mustang",
+    "Mercedes AMG GT", "Nissan GT R", "Porsche 911", "Toyota Supra"
+]
 
 # Training
 EPOCHS = 50
