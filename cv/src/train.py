@@ -3,7 +3,7 @@ import torch
 import configs
 import torch.nn as nn
 from dataset import CarDataset
-from model import CarModelClassifier, CarModelClassifierTL
+from model import CarModelClassifierTL
 from colorama import Fore, Style, init
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 

@@ -6,7 +6,7 @@ from glob import glob
 from PIL import Image
 from dataset import CarDataset
 from colorama import Fore, Style, init
-from model import CarModelClassifier, CarModelClassifierTL
+from model import CarModelClassifierTL
 from sklearn.metrics import confusion_matrix, classification_report
 
 

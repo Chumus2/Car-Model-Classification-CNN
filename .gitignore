@@ -6,8 +6,8 @@ venv/
 .idea/
 
 # ML Artifacts & Weights
-model/
+cv/model/
 *.pth
 
 # Dataset & Data
-data/
+cv/data
