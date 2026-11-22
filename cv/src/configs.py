@@ -33,6 +33,9 @@ DATA_DIR = os.path.join(ROOT_DIR, "data")
 MODEL_DIR = os.path.join(ROOT_DIR, "model")
 TEST_DIR = os.path.join(ROOT_DIR, "test")
 
+# API
+API_URL = "http://backend:8000/predict"
+
 # Data
 SEED = 42
 TRAIN_SIZE = 0.8
