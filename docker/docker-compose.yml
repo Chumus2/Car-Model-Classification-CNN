@@ -1,0 +1,70 @@
+services:
+  train:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: car_trainer
+    shm_size: "2gb"
+    volumes:
+      - ../cv:/app/cv
+    command: python cv/src/train.py
+    restart: "no"
+
+  train-gpu:
+    extends: train
+    profiles: ["gpu"]
+    container_name: car_trainer_gpu
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: car_backend
+    ports:
+      - "8000:8000"
+    command: uvicorn cv.src.api:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ../cv:/app/cv
+    depends_on:
+      train:
+        condition: service_completed_successfully
+
+  backend-gpu:
+    extends: backend
+    profiles: ["gpu"]
+    container_name: car_backend_gpu
+    depends_on:
+      train-gpu:
+        condition: service_completed_successfully
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: car_frontend
+    ports:
+      - "8501:8501"
+    command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0
+    volumes:
+      - ../cv:/app/cv
+      - ../app.py:/app/app.py
+      - ../app-icon.png:/app/app-icon.png
+    environment:
+      - API_URL=${API_URL:-http://backend:8000/predict}
+    depends_on:
+      - backend
+    restart: always

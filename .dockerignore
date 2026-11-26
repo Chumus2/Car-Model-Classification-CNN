@@ -1,0 +1,19 @@
+# Environment / Git
+venv/
+.venv/
+.git/
+.gitignore
+
+# Python / IDE
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Data
+cv/data/
+cv/model/
+cv/test/
+metadata.csv
