@@ -8,6 +8,8 @@
 
 A full-stack computer vision application for car model classification built on **ResNet18** in PyTorch, served via a **FastAPI** backend, and delivered through an interactive **Streamlit** web interface with **Docker Compose** profiles for both CPU-only and NVIDIA GPU execution.
 
+![Frontend](preview.png)
+
 ---
 
 ## 📌 Overview
